@@ -1,7 +1,7 @@
 # Welcome!
 This page is used for documenting our project.
 
-* [Product requirements document](/pages/product-requirements.md) (German)
+* <a href="pages/product-requirements.md" title="Product requirements document">Product requirements document</a> (German)
 * Scope statement (German)
 * Use-Case-Model
 * Class-Diagramm
