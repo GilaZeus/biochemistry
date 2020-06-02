@@ -1,5 +1,5 @@
 Begriff | Übersetzung | Erklärung
---------|-------------|----------
+------- | ----------- | ---------
 **Molekül** | Molecule | Zwei- oder mehratomige Teilchen, die durch chemische Bindungen zusammengehalten werden
 **Reaktion** | Reaction | Umwandlung eines Moleküls in ein anderes.
 **Enzym** | Enzyme | Ein Protein, das eine Reaktion spezifisch katalysiert und unverändert bleibt.
