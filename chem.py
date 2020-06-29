@@ -1,3 +1,5 @@
+import copy
+
 '''Contains main chemistry logic.'''
 class NotExistingAtomException(Exception):
     '''Exception for not existing atoms.'''
@@ -22,7 +24,7 @@ class ElectronNumberException(NotExistingAtomException):
         NotExistingAtomException.__init__(self, proton, electron)
 
 
-class Atom():
+class Atom:
     '''Class for atom objects.
 
     Constructor:
@@ -31,17 +33,19 @@ class Atom():
         Raises ProtonNumberException, if such an atom with this proton number doesn't exist.
     
     Accessible methods:
-        * get_proton_number
-        * get_electron_number
+        * get_proton
+        * get_electron
         * get_valent
         * get_layer
         * get_max_electrons
         * charge
-        * change_charge'''
+        * change_charge
+        * create electron pair'''
     
-    __electron_layers = (2, 8, 8, 18, 18, 32, 32)
+    _electron_layers = (2, 8, 8, 18, 18, 32, 32)
+
     
-    def __init__(self, proton, electron = 0):
+    def __init__(self, proton, electron = None):
         '''Create an atom.
 
         Needs the proton number (and electron, if it is needed).
@@ -53,19 +57,25 @@ class Atom():
             if Atom.__check_electron(proton, electron):
                raise ElectronNumberException(proton, electron)
         except NotExistingAtomException:
-            self.__proton = 0
-            self.__electron = 0
+            self._proton = 0
+            self._electron = 0
             raise
         finally:
-            self.__proton = proton
+            self._proton = proton
             
-            if electron == 0:
-                self.__electron = proton
+            if electron == None:
+                self._electron = proton
             else:
-                self.__electron = electron
+                self._electron = electron
 
-        self.__layer, self.__valence = self.calculate_valence(self.__electron)
-    
+        self.__layer, self.__valence = self.calculate_valence(self._electron)
+
+
+    def _create_electron_pair(self):
+        '''create an electron pair from a H-atom.'''
+        self._proton = 0
+        self._electron = 2
+
 
     @staticmethod
     def __check_proton(proton):
@@ -80,10 +90,12 @@ class Atom():
         '''Check if atom with such electrons doesn't exist.
         
         returns true in that case.'''
+        if electron == None:
+            return False
         return isinstance(electron, float) or electron != 0 and (electron < 0 or electron < proton and \
                Atom.calculate_valence(proton)[1] - proton + electron < 0 or electron > proton \
                and Atom.calculate_valence(proton)[1] + electron - proton > \
-                   Atom.__electron_layers[Atom.calculate_valence(proton)[0]])
+                   Atom._electron_layers[Atom.calculate_valence(proton)[0]])
 
 
     @staticmethod
@@ -91,21 +103,21 @@ class Atom():
         '''Method for calculating valent electrons and layer.'''
         valent = electron
         layer = 0
-        while valent > Atom.__electron_layers[layer]:
-            valent -= Atom.__electron_layers[layer]
+        while valent > Atom._electron_layers[layer]:
+            valent -= Atom._electron_layers[layer]
             layer += 1
         
         return (layer, valent)
     
 
-    def get_proton_number(self):
+    def get_proton(self):
         '''Get the proton number.'''
-        return self.__proton
+        return self._proton
     
 
-    def get_electron_number(self):
+    def get_electron(self):
         '''Get the electron number.'''
-        return self.__proton
+        return self._electron
     
 
     def get_valent(self):
@@ -123,12 +135,12 @@ class Atom():
     def get_max_electrons(self):
         '''Get the maximum number of electrons on the most exterior layer.'''
 
-        return Atom.__electron_layers[self.__layer]
+        return Atom._electron_layers[self.__layer]
 
 
     def charge(self):
         '''Get the charge.'''
-        return self.__proton - self.__electron
+        return self._proton - self._electron
     
     
     def change_charge(self, electron):
@@ -136,11 +148,11 @@ class Atom():
 
         Raises ElectronNumberException if it isn't possible.'''
         try:
-            if Atom.__check_electron(self.__proton, self.__electron + electron):
-                raise ElectronNumberException(self.__proton, self.__electron)
+            if Atom.__check_electron(self._proton, self._electron + electron):
+                raise ElectronNumberException(self._proton, self._electron)
         finally:
-            self.__electron += electron
-            self.__valence = Atom.calculate_valence(self.__electron)[1]
+            self._electron += electron
+            self.__valence = Atom.calculate_valence(self._electron)[1]
 
 
 class UnpossibleBoundException(Exception):
@@ -152,43 +164,76 @@ class UnpossibleBoundException(Exception):
         self.atoms = atoms
 
 
-class BoundAtom():
+class Bond(Atom):
     '''Class for sharing a pair of electrons.
     
-    The central atom in bound must fill the most exterior layer. Double, triple,
-    qudriple bounds are given with linking the same atom twice, thrice and so on.
+    The central atom in bound must fill the most exterior layer. Double and
+    triple bonds are given with linking the same atom twice or thrice.
+
+    Caution: this was tested only for the first three periods.
     
     Constructor:
-        * Arguments: main atom, his bound atoms.
-        * Raises UnpossibleBoundException, if the last electron layer is not filled.
-    
-    Methods:
-        * is_filled
-        * atoms_no_duplicates'''
-    
-    def __init__(self, main_atom, *atoms):
-        '''A simple chemical binding.'''
-        self.main_atom = main_atom
-        if not BoundAtom.is_filled(main_atom, len(atoms)):
-            self.atoms = None
-            raise UnpossibleBoundException(main_atom, atoms)
+        * Arguments: main atom in node.
+        * Members:
+            * atoms: a list of all bonds.
+            * _possible_bond: number of possible bonds.
+            * _possible_accept: number of empty orbitals.
+            * _possible_donate: number of filled orbitals.
+
+    Factories:
+        * create_node
+
+    Static fields:
+        * __electron_pair: an "Atom" that represents two electrons on orbital.'''
+
+    __electron_pair = Atom(1)
+    __electron_pair._create_electron_pair()
+
+    def __init__(self, atom):
+        '''Constructor for a bond atom.
+
+        CAUTION: using this constructor is depricated.
+                 Look for the factory methods below.'''
+        Atom.__init__(self, atom.get_proton(), atom.get_electron())
+        self.atoms = []
+        pairs_total = self.get_max_electrons() // 2
+
+        if self.get_valent() == 8:
+            num_of_pairs = self.get_max_electrons() / 2
+            num_of_free = 0
+        elif self.get_valent() < pairs_total:
+            num_of_pairs = 0
+            num_of_free = pairs_total - self.get_valent()
         else:
-            self.atoms = atoms
-    
+            num_of_pairs = self.get_valent() % pairs_total
+            num_of_free = 0
+        for i in range(num_of_pairs):
+            self.atoms.append(copy.copy(Bond.__electron_pair))
+        for i in range(num_of_free):
+            self.atoms.append(None)
+        self._possible_bond = pairs_total - len(self.atoms)
+        self._possible_accept = self.atoms.count(None)
+        self._possible_donate = pairs_total - self._possible_bond - self._possible_accept
+
 
     @staticmethod
-    def is_filled(atom, num_of_bindings):
-        '''Check if atom has filled the last electron layer.'''
-        return atom.get_valent() + num_of_bindings == atom.get_max_electrons()
+    def create_covalent(atom, *others):
+        '''Create a covalent bond between an atom and its neighbors.'''
+        if not isinstance(atom, Bond):
+            raise ValueError
+        for other in others:
+            if not isinstance(atom, Bond):
+                raise ValueError
+        if len(others) <= atom._possible_bond:
+            for other in others:
+                atom.atoms.append(other)
+                atom._possible_bond -= 1
+                if other._possible_bond > 0:
+                    other.atoms.append(atom)
+                    other._possible_bond -= 1
+                else:
+                    raise UnpossibleBoundException(other, atom)
+        else:
+            raise UnpossibleBoundException(atom, others)
 
 
-    def atoms_no_duplicates(self):
-        '''Return the list of atoms without giving the same atom twice.'''
-        return list((dict.fromkeys(self.atoms)))
-
-
-class Molecule():
-    '''Collection of bound atoms.'''
-
-    def __init__(self, *boundAtoms):
-        pass
