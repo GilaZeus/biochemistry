@@ -155,6 +155,18 @@ class Atom:
             self.__valence = Atom.calculate_valence(self._electron)[1]
 
 
+def atom(symbol):
+    '''A factory for atoms. Works with their chemical symbols.'''
+    table = {'H' : 1, 'He' : 2,
+             'K' : 3, 'Be' : 4, 'B' : 5, 'C' : 6, 'N' : 7, 'O' : 8, 'F' : 9, 'Ne' : 10,
+             'Na' : 11, 'Mg' : 12, 'Al' : 13, 'Si' : 14, 'P' : 15, 'S' : 16, 'Cl' : 17, 'Ar' : 18}
+    
+    if symbol in table:
+        return Atom(table[symbol])
+    else:
+        return Atom(0)
+
+
 class UnpossibleBoundException(Exception):
     '''Exception for unrealistic chemical bounds.'''
     
@@ -235,5 +247,3 @@ class Bond(Atom):
                     raise UnpossibleBoundException(other, atom)
         else:
             raise UnpossibleBoundException(atom, others)
-
-
