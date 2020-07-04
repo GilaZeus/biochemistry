@@ -162,18 +162,26 @@ def atom(symbol):
              'Na' : 11, 'Mg' : 12, 'Al' : 13, 'Si' : 14, 'P' : 15, 'S' : 16, 'Cl' : 17, 'Ar' : 18}
     
     if symbol in table:
-        return Atom(table[symbol])
+        return Bond(Atom(table[symbol]))
     else:
-        return Atom(0)
+        raise ValueError
 
 
-class UnpossibleBoundException(Exception):
+
+class ImpossibleBondException(Exception):
     '''Exception for unrealistic chemical bounds.'''
     
     def __init__(self, main_atom, *atoms):
         Exception.__init__(self)
         self.main_atom = main_atom
         self.atoms = atoms
+
+
+class ImpossibleIonException(ImpossibleBondException):
+    '''Exception for not neutral ion bonds.'''
+    
+    def __init__(self, *atoms):
+        ImpossibleBondException.__init__(None, *atoms)
 
 
 class Bond(Atom):
@@ -187,19 +195,11 @@ class Bond(Atom):
     Constructor:
         * Arguments: main atom in node.
         * Members:
-            * atoms: a list of all bonds.
-            * _possible_bond: number of possible bonds.
-            * _possible_accept: number of empty orbitals.
-            * _possible_donate: number of filled orbitals.
+            * orbitals: a list of all bindings. The index number is important
+                        and represents different orbitals! 
+            * configuration: configuration of an atom befor bindings.
+            * visited: helps to prevent infinite recursions in graph.'''
 
-    Factories:
-        * create_node
-
-    Static fields:
-        * __electron_pair: an "Atom" that represents two electrons on orbital.'''
-
-    __electron_pair = Atom(1)
-    __electron_pair._create_electron_pair()
 
     def __init__(self, atom):
         '''Constructor for a bond atom.
@@ -207,43 +207,108 @@ class Bond(Atom):
         CAUTION: using this constructor is depricated.
                  Look for the factory methods below.'''
         Atom.__init__(self, atom.get_proton(), atom.get_electron())
-        self.atoms = []
-        pairs_total = self.get_max_electrons() // 2
+        self.orbitals = [0 for i in range(self.get_max_electrons() // 2)]
+        self.visited = False
+        i = 0
+        electrons_total = self.get_valent()
+        while i < electrons_total:
+            self.orbitals[i] += 1
+            i += 1
+            if i >= len(self.orbitals):
+                i = 0
+                electrons_total -= len(self.orbitals)
+        self.configuration = tuple(self.orbitals)
 
-        if self.get_valent() == 8:
-            num_of_pairs = self.get_max_electrons() / 2
-            num_of_free = 0
-        elif self.get_valent() < pairs_total:
-            num_of_pairs = 0
-            num_of_free = pairs_total - self.get_valent()
-        else:
-            num_of_pairs = self.get_valent() % pairs_total
-            num_of_free = 0
-        for i in range(num_of_pairs):
-            self.atoms.append(copy.copy(Bond.__electron_pair))
-        for i in range(num_of_free):
-            self.atoms.append(None)
-        self._possible_bond = pairs_total - len(self.atoms)
-        self._possible_accept = self.atoms.count(None)
-        self._possible_donate = pairs_total - self._possible_bond - self._possible_accept
+
+    def change_charge(self, electron):
+        '''Change charge of an atom.'''
+        super().change_charge(electron)
+        result = Bond(self)
+        self.orbitals = result.orbitals
+        self.configuration = result.configuration
+
+
+    def possible_covalent(self):
+        '''Count possible covalent bindings.'''
+        return self.orbitals.count(1)
+    
+
+    def possible_donations(self):
+        '''Count pairs for donation.'''
+        return self.orbitals.count(2)
+    
+
+    def possible_acceptances(self):
+        '''Count empty orbitals.'''
+        return self.orbitals.count(0)
+    
+
+    def __create_node(self, *others, typ=1):
+        '''Create bond between atoms.'''
+        for other in others:
+            if not isinstance(other, Bond):
+                raise ValueError
+            if typ == 1:
+                self_max = self.possible_covalent()
+                other_max = other.possible_covalent()
+                other_typ = 1
+            elif typ == 2:
+                self_max = self.possible_donations()
+                other_max = other.possible_acceptances()
+                other_typ = 0
+            else:
+                raise ValueError
+
+            if self_max > 0 and other_max > 0:
+                self.orbitals[self.orbitals.index(typ)] = other
+                other.orbitals[other.orbitals.index(other_typ)] = self
+            else:
+                raise ImpossibleBondException(self, *others)
+
+
+    def create_covalent(self, *others):
+        '''Create covalent bond between atoms.'''
+        self.__create_node(*others, typ=1)
+    
+
+    def donate_electrons(self, *others):
+        '''Donate electron pairs.'''
+        self.__create_node(*others, typ=2)
+
+
+    def __reset(self):
+        '''Reset visiting of nodes in a molecule.'''
+        self.visited = False
+        for at in self.orbitals:
+            if isinstance(at, Bond) and at.visited:
+                at.__reset()
+
+
+    def molecule_charge(self):
+        '''Calculate the charge of a molecule.'''
+        result = self.__molecule_charge_body()
+        self.__reset()
+        return result
+
+
+    def __molecule_charge_body(self):
+        '''Calculate the charge of a molecule.'''
+        result = self.charge()
+        self.visited = True
+        for at in self.orbitals:
+            if isinstance(at, Bond) and not at.visited:
+                result += at.__molecule_charge_body()
+        return result
 
 
     @staticmethod
-    def create_covalent(atom, *others):
-        '''Create a covalent bond between an atom and its neighbors.'''
-        if not isinstance(atom, Bond):
-            raise ValueError
-        for other in others:
-            if not isinstance(atom, Bond):
-                raise ValueError
-        if len(others) <= atom._possible_bond:
-            for other in others:
-                atom.atoms.append(other)
-                atom._possible_bond -= 1
-                if other._possible_bond > 0:
-                    other.atoms.append(atom)
-                    other._possible_bond -= 1
-                else:
-                    raise UnpossibleBoundException(other, atom)
+    def ion(*molecules):
+        '''Check if this molecules build a neutral ion-bond.'''
+        result = 0
+        for molecule in molecules:
+            result += molecule.molecule_charge()
+        
+        if result == 0:
+            return True
         else:
-            raise UnpossibleBoundException(atom, others)
+            raise ImpossibleIonException(*molecules)
