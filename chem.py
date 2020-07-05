@@ -264,16 +264,18 @@ class Bond(Atom):
                 other.orbitals[other.orbitals.index(other_typ)] = self
             else:
                 raise ImpossibleBondException(self, *others)
+        
+        return self
 
 
     def create_covalent(self, *others):
         '''Create covalent bond between atoms.'''
-        self.__create_node(*others, typ=1)
+        return self.__create_node(*others, typ=1)
     
 
     def donate_electrons(self, *others):
         '''Donate electron pairs.'''
-        self.__create_node(*others, typ=2)
+        return self.__create_node(*others, typ=2)
 
 
     def __reset(self):
