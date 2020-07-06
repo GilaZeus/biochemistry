@@ -8,24 +8,20 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import os
+import importlib
 import shutil
-from chain_to_import import chain
+import chain_to_import
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
+        importlib.reload(chain_to_import)
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
-        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setObjectName("lineEdit")
-        self.gridLayout.addWidget(self.lineEdit, 0, 0, 1, 1)
-        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setObjectName("pushButton")
-        self.gridLayout.addWidget(self.pushButton, 0, 1, 1, 1)
         self.scrollArea = QtWidgets.QScrollArea(self.centralwidget)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
@@ -34,7 +30,7 @@ class Ui_MainWindow(object):
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
 
         self.labels = []
-        self.create_labels(chain)
+        self.create_labels(chain_to_import.chain)
 
         self.molecule = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
         self.molecule.setGeometry(QtCore.QRect(10, 40, 311, 401))
@@ -104,10 +100,8 @@ class Ui_MainWindow(object):
                 x += 300
 
 
-
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.pushButton.setText(_translate("MainWindow", "open"))
         for label in self.labels:
             label[0].setText(_translate("MainWindow", label[1]))
