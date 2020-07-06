@@ -1,4 +1,4 @@
-from chem import Bond
+from logic.chem import Bond
 from abc import ABCMeta
 import os.path
 import sys
