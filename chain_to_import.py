@@ -9,7 +9,7 @@ CH3 = atom('C')
 CH3.create_covalent(atom('H'), atom('H'), atom('H'))
 OH = atom('O').create_covalent(atom('H'))
 CH3OH = CH3.create_covalent(OH)
-methanol = Molecule(CH3OH, 'methanol', 'A very toxic molecule', 'resources\\images\\Glucose.png')
+methanol = Molecule(CH3OH, 'METHANOL', 'A very toxic molecule', 'resources\\images\\Glucose.png')
 
 
 # Formaldehyd
