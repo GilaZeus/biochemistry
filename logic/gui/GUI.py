@@ -8,6 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import os
+from PIL import Image
 import importlib
 import shutil
 import chain_to_import
@@ -38,7 +39,7 @@ class Ui_MainWindow(object):
             self.hbox.addWidget(label[0])
         self.scrollAreaWidgetContents_2.setLayout(self.hbox)
 
-        self.molecule = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
+        '''self.molecule = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
         self.molecule.setGeometry(QtCore.QRect(10, 40, 311, 401))
         self.molecule.setObjectName("molecule")
         
@@ -48,7 +49,7 @@ class Ui_MainWindow(object):
         
         self.enzyme = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
         self.enzyme.setGeometry(QtCore.QRect(340, 90, 261, 181))
-        self.enzyme.setObjectName("enzyme")
+        self.enzyme.setObjectName("enzyme")'''
         
         self.scrollArea.setWidget(self.scrollAreaWidgetContents_2)
         self.gridLayout.addWidget(self.scrollArea, 1, 0, 1, 2)
@@ -66,40 +67,49 @@ class Ui_MainWindow(object):
         for reaction in chain:
             for educt in reaction.educts:
                 label = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
-                label.setGeometry(QtCore.QRect(x, 40, 311, 401))
+                img = Image.open(educt.image)
+                width, height = img.size
+                if 64 * len(educt.name) > width:
+                    width = 64 * len(educt.name)
+                label.setGeometry(QtCore.QRect(x, 40, width, height + 50))
                 label.setObjectName(educt.name)
                 text = "<html><head/><body><p align=\"center\"><img src=\"" + \
                        educt.image + "\"/></p><p align=\"center\"><br/></p><p align=\"center\"><span style=\" font-size:16pt; font-weight:600;\">" + \
                        educt.name + "</span></p></body></html>"
                 self.labels.append([label, text])
-                x += 300
-                if educt != reaction.educts[-1]:
+                x += width + 10
+                if reaction.educts.index(educt) != len(reaction.educts) - 1:
                     label = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
-                    label.setGeometry(QtCore.QRect(x, 40, 311, 401))
+                    label.setGeometry(QtCore.QRect(x, 40, 50, 50))
                     label.setObjectName('plus')
                     text = "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">+</span></p></body></html>"
                     self.labels.append([label, text])
                     x += 300
             label = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
-            label.setGeometry(QtCore.QRect(x, 40, 311, 401))
+            width = 48 * len(reaction.name) + 50
+            label.setGeometry(QtCore.QRect(x, 40, width, 401))
             label.setObjectName(reaction.name)
             text = "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-style:italic;\">" + \
                    reaction.name + "</span></p><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">————————&gt;</span></p></body></html>"
             self.labels.append([label, text])
-            x += 300
+            x += width
         
         for product in chain.chain[-1].products:
+            img = Image.open(product.image)
+            width, height = img.size
+            if 64 * len(product.name) > width:
+                width = 64 * len(product.name)    
             label = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
-            label.setGeometry(QtCore.QRect(x, 40, 311, 401))
+            label.setGeometry(QtCore.QRect(x, 40, width, height + 50))
             label.setObjectName(product.name)
             text = "<html><head/><body><p align=\"center\"><img src=\"" + \
                    product.image + "\"/></p><p align=\"center\"><br/></p><p align=\"center\"><span style=\" font-size:16pt; font-weight:600;\">" + \
                    product.name + "</span></p></body></html>"
             self.labels.append([label, text])
-            x += 300
-            if product != chain.chain[-1].products[-1]:
+            x += width + 10
+            if reaction.products.index(product) != len(reaction.products) - 1:
                 label = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
-                label.setGeometry(QtCore.QRect(x, 40, 311, 401))
+                label.setGeometry(QtCore.QRect(x, 40, 50, 50))
                 label.setObjectName('plus')
                 text = "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">+</span></p></body></html>"
                 self.labels.append([label, text])

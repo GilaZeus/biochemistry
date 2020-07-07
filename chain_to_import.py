@@ -1,5 +1,6 @@
 from logic.chain import Molecule, Enzyme, Chain
 from logic.chem import Bond, atom, Atom
+import copy
 
 # Einfaches Beispiel: Alcohol-dehydrogenase mit methanol.
 
@@ -27,8 +28,8 @@ formate = Molecule(CHOOminus, 'Formate', '', 'resources\\images\\Glucose.png')
 
 
 # Enzyme
-alcoholdehydrogenase = Enzyme('Alcoholdehydrogenase', 'metabolises alcohol', methanol, product=formaldehyde)
-enzyme2 = Enzyme('Formaldehyde metabolising', '', formaldehyde, product=formate)
+alcoholdehydrogenase = Enzyme('Alcoholdehydrogenase AHAHAHAHAAHAHAHAHAHAHA!!!!!!!!', 'metabolises alcohol', methanol, copy.deepcopy(methanol), product=formaldehyde)
+enzyme2 = Enzyme('Formaldehyde metabolising', '', formaldehyde, product=formate, product2=copy.deepcopy(formaldehyde))
 
 
 # Chain of reactions
