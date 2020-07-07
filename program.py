@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 from dialogue import Ui_MainWindow
 import shutil
 import sys
@@ -21,6 +21,14 @@ class mywindow(QtWidgets.QMainWindow):
     def start_program(self):
         open_chain(self.ui.lineEdit.text())
         self.ui.second.show()
+    
+
+    def keyPressEvent(self, e):
+        if e.key() == QtCore.Qt.Key_Return:
+            self.start_program()
+
+
+
  
  
 app = QtWidgets.QApplication([])
