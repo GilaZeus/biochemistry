@@ -1,5 +1,3 @@
-import copy
-
 '''Contains main chemistry logic.'''
 class NotExistingAtomException(Exception):
     '''Exception for not existing atoms.'''
