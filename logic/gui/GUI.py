@@ -77,14 +77,14 @@ class Ui_MainWindow(object):
                     label = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
                     label.setGeometry(QtCore.QRect(x, 40, 311, 401))
                     label.setObjectName('plus')
-                    text = "<html><head/><body><p><span style=\" font-size:18pt; font-weight:600;\">+</span></p></body></html>"
+                    text = "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">+</span></p></body></html>"
                     self.labels.append([label, text])
                     x += 300
             label = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
             label.setGeometry(QtCore.QRect(x, 40, 311, 401))
             label.setObjectName(reaction.name)
-            text = "<html><head/><body><p align=\"center\"><span style=\" font-size:18pt; font-style:italic;\">" + \
-                   reaction.name + "</span></p><p align=\"center\"><span style=\" font-size:18pt; font-weight:600;\">————————&gt;</span></p></body></html>"
+            text = "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-style:italic;\">" + \
+                   reaction.name + "</span></p><p align=\"center\"><span style=\" font-size:12pt; font-weight:600;\">————————&gt;</span></p></body></html>"
             self.labels.append([label, text])
             x += 300
         
@@ -101,7 +101,7 @@ class Ui_MainWindow(object):
                 label = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
                 label.setGeometry(QtCore.QRect(x, 40, 311, 401))
                 label.setObjectName('plus')
-                text = "<html><head/><body><p><span style=\" font-size:18pt; font-weight:600;\">+</span></p></body></html>"
+                text = "<html><head/><body><p><span style=\" font-size:12pt; font-weight:600;\">+</span></p></body></html>"
                 self.labels.append([label, text])
                 x += 300
 
