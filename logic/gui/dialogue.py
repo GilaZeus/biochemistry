@@ -8,7 +8,7 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import os, sys
-import GUI
+from logic.gui import GUI
 
 
 class SecondWindow(QtWidgets.QMainWindow):
