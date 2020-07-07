@@ -18,11 +18,11 @@ def draw_single(position, direction):
     t.pendown()
     t.right(direction * 90)
     t.penup()
-    t.forward(20)
+    t.forward(10)
     t.pendown()
-    t.forward(40)
-    t.penup()
     t.forward(20)
+    t.penup()
+    t.forward(10)
     return t.position()
 
 
@@ -72,7 +72,7 @@ def draw_body(molecule, direction, position):
     for bond in molecule.no_repeats():
         if isinstance(bond, Bond) and not bond.visited:
             multiplicity = molecule.orbitals.count(bond)
-            draw_body(bond, direction + 1, draw_mult(t.pos(), direction, multiplicity))
+            draw_body(bond, direction, draw_mult(t.pos(), direction, multiplicity))
 
         direction += 1
         if direction == 4:
@@ -118,3 +118,4 @@ def draw_postscript(molecule, path):
     img.putdata(newData)
     img.save(path, "PNG")
     crop(path)
+    turtle.clearscreen()

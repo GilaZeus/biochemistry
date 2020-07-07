@@ -43,10 +43,10 @@ class Molecule(TextField):
         
         self.cofactor = cofactor
 
-        if os.path.isfile(image):
-            self.image = image
-        else:
+        if not os.path.isfile(image):
             Molecule.draw(bond, image)
+        
+        self.image = image
     
 
     @staticmethod
