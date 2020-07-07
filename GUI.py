@@ -22,15 +22,21 @@ class Ui_MainWindow(object):
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName("gridLayout")
+
         self.scrollArea = QtWidgets.QScrollArea(self.centralwidget)
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
+        self.scrollArea.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.scrollAreaWidgetContents_2 = QtWidgets.QWidget()
         self.scrollAreaWidgetContents_2.setGeometry(QtCore.QRect(0, 0, 776, 516))
         self.scrollAreaWidgetContents_2.setObjectName("scrollAreaWidgetContents_2")
 
         self.labels = []
+        self.hbox = QtWidgets.QHBoxLayout()
         self.create_labels(chain_to_import.chain)
+        for label in self.labels:
+            self.hbox.addWidget(label[0])
+        self.scrollAreaWidgetContents_2.setLayout(self.hbox)
 
         self.molecule = QtWidgets.QLabel(self.scrollAreaWidgetContents_2)
         self.molecule.setGeometry(QtCore.QRect(10, 40, 311, 401))
