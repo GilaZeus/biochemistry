@@ -2,6 +2,7 @@ from logic.chem import Bond
 from abc import ABCMeta
 import os.path
 import sys
+from turtle_helper import draw_postscript
 
 
 class TextField(metaclass=ABCMeta):
@@ -23,7 +24,6 @@ class Molecule(TextField):
     
     Method:
         - draw(bond, path): create an image from a Bond-object (NOT COMPLETED)'''
-    draw_is_not_completed = True
 
 
     def __init__(self, bond, name, text, image, cofactor=False):
@@ -54,8 +54,7 @@ class Molecule(TextField):
         '''Draw a molecule from a Bond-object.
 
         Save it in path.'''
-        if Molecule.draw_is_not_completed:
-            sys.exit('Draw() is not completed!')
+        draw_postscript(bond, path)
 
 
 class Enzyme(TextField):
