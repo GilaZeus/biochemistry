@@ -2,7 +2,7 @@
 ## Creating data.
 You can create your own displayable reaction chains. Just simply write a python script with an object named `chain` in it and import it in the program, when the dialogue appears. Use the following classes for that:
 
-## `chem`
+## chem
 
 field | arguments | type | description
 ----- | --------- | ---- | -----------
@@ -10,7 +10,7 @@ field | arguments | type | description
 **`table_inv`** | | `dict` | A reverse function for `table`.
 **`atom()`** | symbol: `String` | `Bond` | A factory for atoms. Works with their chemical symbols. Can raise `ValueError` if such an atom does not exist.
 
-### `Atom`
+### Atom
 Simple class for atoms, works like a periodic table.
 
 field | arguments | type | description
@@ -32,7 +32,7 @@ field | arguments | type | description
 **`charge()`** | | `int` | Get the charge.
 **`change_charge()`** | electron: `int` | `int` | Add electrons or remove them. Raises ElectronNumberException if it isn't possible.
 
-### `Bond(Atom)`
+### Bond(Atom)
 Class for sharing a pair of electrons. Inherits `Atom`, makes from it a node of the molecule graph. Proves neighbors for the octet rule. Double and triple bonds are given with linking the same atom twice or thrice.
 **CAUTION**: this was tested only for the first three periods.
 
@@ -55,7 +55,7 @@ field | arguments | type | description
 **`__molecule_charge_body()`** | | `int` | Calculate the charge of a molecule.
 **`ion()`** | *molecules: `Bond` | `bool` | Check if these molecules build a neutral ion-bond or raise a `ImpossibleIonException`.
 
-## `chain`
+## chain
 Dependencies:
 * `Bond` from `logic.chem`
 * `ABCMeta` from `abc`
@@ -63,7 +63,7 @@ Dependencies:
 * `sys`
 * `draw_postscript` from `logic.turtle_helper`
 
-### `TextField`
+### TextField
 An abstract class for text fields.
 
 field | arguments | type | description
@@ -72,7 +72,7 @@ field | arguments | type | description
 **`name`** | | `String` | Name.
 **`text`** | | `String` | Text.
 
-### `Molecule(TextField)`
+### Molecule(TextField)
 A molecule object. Inherits TextField
 
 field | arguments | type | description
@@ -87,7 +87,7 @@ field | arguments | type | description
 **`text`** | | `String` | Text.
 **`draw()`** | bond='': `Bond`, path: `String` | `void` | Draw a molecule from a Bond-object. Save it in path.
 
-### `Enzyme(TextField)`
+### Enzyme(TextField)
 A class for enzymes or reactions (in the program logic they are synonyms).
 
 field | arguments | type | description
@@ -95,14 +95,14 @@ field | arguments | type | description
 **`Enzyme()`** | name='': `String`, text: `String`, *educts: `Molecule`, *products: `Molecule` | `Enzyme` | Constructor. Raises `ValueError`, if no educts or products are given or if they are not molecules.
 
 
-### `Chain`
+### Chain
 A chain of reactions. Iterator.
 
 field | arguments | type | description
 ----- | --------- | ---- | -----------
 **`Chain()`** | *reactions: `Enzyme` | `Chain` | Constructor. Raises `ValueError`, if reactions are not instances of `Enzyme`. Raises  `NotAChainException`.
 
-## `turtle_helper`
+## turtle_helper
 Methods for drawing. Dependencies:
 * `turtle`
 * `Bond`, `table_inv` from `logic.chem` 
