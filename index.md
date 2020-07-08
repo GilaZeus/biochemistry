@@ -6,3 +6,4 @@ This page is used for project's documentation.
 * [Scope statement](pages/scope-statement.html) (German)
 * Use-Case-Model
 * Class-Diagramm
+* [Documentation](pages/documentation.html)

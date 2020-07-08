@@ -69,17 +69,11 @@ class Atom:
         self.__layer, self.__valence = self.calculate_valence(self._electron)
 
 
-    def _create_electron_pair(self):
-        '''create an electron pair from a H-atom.'''
-        self._proton = 0
-        self._electron = 2
-
-
     @staticmethod
     def __check_proton(proton):
         '''Check if atom with such protons doesn't exist.
         
-        returns true in that case.'''
+        Return true in that case.'''
         return (proton < 1 or proton > 118) or isinstance(proton, float)
 
 
@@ -87,7 +81,7 @@ class Atom:
     def __check_electron(proton, electron):
         '''Check if atom with such electrons doesn't exist.
         
-        returns true in that case.'''
+        Return true in that case.'''
         if electron == None:
             return False
         return isinstance(electron, float) or electron != 0 and (electron < 0 or electron < proton and \
