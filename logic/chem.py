@@ -201,7 +201,7 @@ class Bond(Atom):
         '''Constructor for a bond atom.
 
         CAUTION: using this constructor is depricated.
-                 Look for the factory methods below.'''
+                 Look for the factory methods.'''
         Atom.__init__(self, atom.get_proton(), atom.get_electron())
         self.orbitals = [0 for i in range(self.get_max_electrons() // 2)]
         self.visited = False
@@ -306,7 +306,7 @@ class Bond(Atom):
 
     @staticmethod
     def ion(*molecules):
-        '''Check if this molecules build a neutral ion-bond.'''
+        '''Check if these molecules build a neutral ion-bond.'''
         result = 0
         for molecule in molecules:
             result += molecule.molecule_charge()
