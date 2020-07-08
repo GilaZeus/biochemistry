@@ -18,11 +18,11 @@ def draw_single(position, direction):
     t.pendown()
     t.right(direction * 90)
     t.penup()
-    t.forward(10)
+    t.forward(5)
     t.pendown()
-    t.forward(20)
+    t.forward(15)
     t.penup()
-    t.forward(10)
+    t.forward(5)
     return t.position()
 
 
@@ -35,31 +35,32 @@ def draw_mult(position, direction, multiplicity=1):
         return draw_single(position, direction)
     elif multiplicity == 2:
         if direction == 0 or direction == 2:
-            position += turtle.Vec2D(0, 5)
+            position += turtle.Vec2D(0, 3)
             draw_single(position, direction)
-            position -= turtle.Vec2D(0, 10)
-            return draw_single(position, direction) + turtle.Vec2D(0, 5)
+            position -= turtle.Vec2D(0, 6)
+            return draw_single(position, direction) + turtle.Vec2D(0, 3)
         elif direction == 1 or direction == 3:
-            position += turtle.Vec2D(5, 0)
+            position += turtle.Vec2D(3, 0)
             draw_single(position, direction)
-            position -= turtle.Vec2D(10, 0)
-            return draw_single(position, direction) + turtle.Vec2D(5, 0)
+            position -= turtle.Vec2D(6, 0)
+            return draw_single(position, direction) + turtle.Vec2D(3, 0)
     elif multiplicity == 3:
         if direction == 0 or direction == 2:
             draw_single(position, direction)
-            position += turtle.Vec2D(0, 5)
+            position += turtle.Vec2D(0, 3)
             draw_single(position, direction)
-            position -= turtle.Vec2D(0, 10)
-            return draw_single(position, direction) + turtle.Vec2D(0, 5)
+            position -= turtle.Vec2D(0, 6)
+            return draw_single(position, direction) + turtle.Vec2D(0, 3)
         elif direction == 1 or direction == 3:
             draw_single(position, direction)
-            position += turtle.Vec2D(5, 0)
+            position += turtle.Vec2D(3, 0)
             draw_single(position, direction)
-            position -= turtle.Vec2D(10, 0)
-            return draw_single(position, direction) + turtle.Vec2D(5, 0)
+            position -= turtle.Vec2D(6, 0)
+            return draw_single(position, direction) + turtle.Vec2D(3, 0)
 
 
 def draw_body(molecule, direction, position):
+    '''Body of the recursive draw function.'''
     t = turtle.Turtle()
     t.penup()
     t.setposition(position)

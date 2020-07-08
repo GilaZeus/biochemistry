@@ -91,7 +91,7 @@ class NotAChainException(Exception):
         self.educt = not_existing_educt
 
 
-class Chain(TextField):
+class Chain:
     '''A chain of reactions. Iterator.'''
     
     def __init__(self, *reactions):
