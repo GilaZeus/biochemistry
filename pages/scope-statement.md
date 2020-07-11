@@ -85,6 +85,6 @@ Anpassbarkeit | | | X |
 
 ### 9. Glossar
 
-Sie finden es [hier](pages/dictionary.html)
+Sie finden es [hier](/dictionary.html).
 
 [Back to the index page.](https://kiratsuwa.github.io/biochemistry/)
