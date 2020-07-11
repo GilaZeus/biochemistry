@@ -118,6 +118,6 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Biochemistry, 0.01-alpha"))
         for label in self.labels:
             label[0].setText(_translate("MainWindow", label[1]))
