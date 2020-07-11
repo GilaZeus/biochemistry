@@ -202,7 +202,10 @@ class Bond(Atom):
 
         CAUTION: using this constructor is depricated.
                  Look for the factory methods.'''
-        Atom.__init__(self, atom.get_proton(), atom.get_electron())
+        if isinstance(atom, Atom):
+            Atom.__init__(self, atom.get_proton(), atom.get_electron())
+        else:
+            raise ValueError('The atom in node is not an Atom!')
         self.orbitals = [0 for i in range(self.get_max_electrons() // 2)]
         self.visited = False
         i = 0
