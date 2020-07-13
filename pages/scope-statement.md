@@ -4,7 +4,6 @@
 
 
 #### Entwickler:
-* Kira Främbs
 * Rustam Gilyazev
 * Beatrice Wagner
 
