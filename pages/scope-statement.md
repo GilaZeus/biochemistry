@@ -13,7 +13,6 @@
    #### Musskriterien:
    * Das Produkt gibt eine Übersicht über die separaten Reaktionen und Reaktionsketten der biochemischen Vorgänge einer Zelle.
    * Dem Entwickler soll es möglich sein, neue Reaktionen und Reaktionsketten in das Programm einzufügen.
-   * Der Benutzer soll sein Wissen anhand kleiner Tests prüfen können.
    #### Wunschkriterien:
    * Der Benutzer soll sein Wissen anhand kleiner Tests prüfen können.
    * Die Richtigkeit der gebildeten Reaktionen soll überprüft werden.
